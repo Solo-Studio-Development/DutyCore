@@ -1,5 +1,9 @@
 name: DutyCore
 version: '1.0.0'
 main: net.solostudio.dutycore.DutyCore
-api-version: '1.21'
+api-version: '1.20'
 authors: [ Solo Studio ]
+folia-supported: true
+depend: [LiteBans, LuckPerms]
+softdepend: [PlaceholderAPI]
+loadbefore: [LiteBans, LuckPerms, PlaceholderAPI]

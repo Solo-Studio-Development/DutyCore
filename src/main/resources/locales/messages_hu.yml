@@ -1,0 +1,7 @@
+prefix: "&e&lDUTYCORE &8| "
+
+messages:
+  invalid-player: "%prefix% &cHelytelen játékos!"
+  player-required: "%prefix% &cJátékos szükséges!"
+  missing-argument: "%prefix% &cHelytelen használat! &8(&e{usage}&8)"
+  no-permission: "%prefix% &cNincsen ehhez jogod!"

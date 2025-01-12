@@ -1,5 +1,9 @@
 plugins {
     id 'java'
+    id "io.freefair.lombok" version "8.11"
+    id "com.gradleup.shadow" version "8.3.2"
+    id "io.papermc.paperweight.userdev" version "1.7.7"
+    id "io.github.revxrsal.zapper" version "1.0.2"
 }
 
 group = 'net.solostudio'
@@ -7,43 +11,59 @@ version = '1.0.0'
 
 repositories {
     mavenCentral()
-    maven {
-        name = "papermc-repo"
-        url = "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
-    }
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url = "https://jitpack.io" }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    implementation("io.github.revxrsal:lamp.bukkit:4.0.0-beta.23") {
+        exclude(module: "lamp.common")
+        exclude(module: "lamp.brigadier")
+    }
+
+    zap("mysql:mysql-connector-java:8.0.33")
+    zap("io.github.revxrsal:lamp.common:4.0.0-beta.23")
+    zap("io.github.revxrsal:lamp.brigadier:4.0.0-beta.23")
+    zap("org.bstats:bstats-bukkit:3.0.2")
+    zap("com.github.Anon8281:UniversalScheduler:0.1.6")
+    zap("com.h2database:h2:2.3.232")
+    zap("com.zaxxer:HikariCP:6.2.1")
+
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.projectlombok:lombok:1.18.36")
+
+    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
 }
 
-def targetJavaVersion = 21
 java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release.set(targetJavaVersion)
-    }
+compileJava {
+    options.compilerArgs += ["-parameters"]
 }
 
-processResources {
-    def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
-    }
+zapper {
+    libsFolder = "libs"
+    relocationPrefix = "net.solostudio.dutycore.libs"
+
+    repositories { it.includeProjectRepositories() }
+
+    relocate("org.bstats", "bstats")
+    relocate("org.h2", "h2")
+    relocate("com.github.Anon8281.universalScheduler", "universalScheduler")
+}
+
+shadowJar {
+    exclude("lamp.lamp_pt.properties")
+    exclude("lamp.lamp_en.properties")
+    exclude("lamp.lamp_it.properties")
+    exclude("lamp.lamp_fr.properties")
+    exclude("lamp.lamp-bukkit_pt.properties")
+    exclude("lamp.lamp-bukkit_it.properties")
+    exclude("lamp.lamp-bukkit_fr.properties")
+    exclude("lamp.lamp-bukkit_en.properties")
 }
