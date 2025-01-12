@@ -1,0 +1,5 @@
+name: DutyCore
+version: '1.0.0'
+main: net.solostudio.dutycore.DutyCore
+api-version: '1.21'
+authors: [ Solo Studio ]
