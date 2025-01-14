@@ -1,0 +1,33 @@
+package net.solostudio.dutycore.interfaces;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public interface DutyDatabase {
+    boolean isConnected();
+
+    void disconnect();
+
+    void reconnect();
+
+    void createTable();
+
+    void joinDuty(@NotNull String playerName);
+
+    void leaveDuty(@NotNull String playerName);
+
+    void createPlayer(@NotNull String playerName);
+
+    boolean exists(@NotNull String playerName);
+
+    String getFormattedDutyTime(@NotNull String playerName);
+
+    void updateDutyTime(@NotNull String playerName);
+
+    boolean isInDuty(@NotNull String playerName);
+
+    List<String> getEveryStaffInDatabase();
+
+    void deletePlayer(@NotNull String playerName);
+}

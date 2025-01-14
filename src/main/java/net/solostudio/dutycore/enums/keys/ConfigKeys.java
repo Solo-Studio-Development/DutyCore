@@ -8,6 +8,7 @@ import java.util.List;
 
 public enum ConfigKeys {
     LANGUAGE("language"),
+    DATABASE("database.type"),
     ALIASES("aliases");
 
     private final String path;

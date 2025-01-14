@@ -1,5 +1,6 @@
 package net.solostudio.dutycore.menu;
 
+import net.solostudio.dutycore.enums.keys.ItemKeys;
 import net.solostudio.dutycore.managers.MenuController;
 import net.solostudio.dutycore.processor.MessageProcessor;
 import org.bukkit.Bukkit;
@@ -7,8 +8,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.stream.IntStream;
 
 @SuppressWarnings("deprecation")
 public abstract class Menu implements InventoryHolder {
@@ -48,9 +47,9 @@ public abstract class Menu implements InventoryHolder {
     public void setFillerGlass() {
         if (!enableFillerGlass()) return;
 
-        //IntStream.range(0, getSlots()).forEach(index -> {
-        //    if (inventory.getItem(index) == null) inventory.setItem(index, ItemKeys.FILLER_GLASS_ITEM.getItem());
-        //});
+        for (int index = 0; index < getSlots(); index++) {
+            if (inventory.getItem(index) == null) inventory.setItem(index, ItemKeys.FILLER_GLASS_ITEM.getItem());
+        }
     }
 
     public void close() {

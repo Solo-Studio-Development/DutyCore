@@ -1,9 +1,12 @@
 package net.solostudio.dutycore.utils;
 
 import net.solostudio.dutycore.DutyCore;
+import net.solostudio.dutycore.annotations.Staffs;
 import net.solostudio.dutycore.commands.CommandDuty;
 import net.solostudio.dutycore.enums.keys.ConfigKeys;
 import net.solostudio.dutycore.exception.CommandExceptionHandler;
+import net.solostudio.dutycore.listeners.DatabaseListener;
+import net.solostudio.dutycore.listeners.DutyListener;
 import net.solostudio.dutycore.listeners.MenuListener;
 import org.bukkit.Bukkit;
 import revxrsal.commands.bukkit.BukkitLamp;
@@ -14,6 +17,8 @@ public class RegisterUtils {
         LoggerUtils.info("### Registering listeners... ###");
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(), DutyCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new DatabaseListener(), DutyCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new DutyListener(), DutyCore.getInstance());
 
         LoggerUtils.info("### Successfully registered 3 listener. ###");
     }
@@ -23,6 +28,9 @@ public class RegisterUtils {
 
         var lamp = BukkitLamp.builder(DutyCore.getInstance())
                 .exceptionHandler(new CommandExceptionHandler())
+                .suggestionProviders(providers -> providers.addProviderForAnnotation(Staffs.class, staffs -> context -> DutyCore.getDatabase().getEveryStaffInDatabase()
+                        .stream()
+                        .toList()))
                 .build();
 
         lamp.register(Orphans.path(ConfigKeys.ALIASES.getList().toArray(String[]::new)).handler(new CommandDuty()));

@@ -5,6 +5,34 @@
 language: "hu" # Supported languages -> hu, en
 
 # ============================================================== #
+# Database Configuration Section                                 #
+# ============================================================== #
+
+database:
+  type: mysql # Supported types -> MYSQL, H2
+
+  # MySQL-specific configuration
+  mysql:
+    host: localhost
+    port: 3306
+    database: coma112
+    username: root
+    password: "" # Enter your MySQL password here (leave empty for no password)
+    ssl: false
+    certificateverification: false
+    poolsize: 10
+    lifetime: 1800000
+
+# ============================================================== #
+# Item Settings                                                  #
+# ============================================================== #
+
+filler-glass-item:
+  material: GRAY_STAINED_GLASS_PANE
+  name: " "
+  lore: [ ]
+
+# ============================================================== #
 # Command Settings                                               #
 # ============================================================== #
 

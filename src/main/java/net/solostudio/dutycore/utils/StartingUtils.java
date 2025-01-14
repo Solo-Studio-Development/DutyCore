@@ -78,7 +78,7 @@ public class StartingUtils {
         }
     }
 
-    private static VersionTypes extractVersionFromBukkitString(String bukkitVersion) {
+    private static VersionTypes extractVersionFromBukkitString(@NotNull String bukkitVersion) {
         Pattern versionPattern = Pattern.compile("\\(MC: (\\d{1,2})\\.(\\d{1,2})(?:\\.(\\d{1,2}))?\\)");
         Matcher matcher = versionPattern.matcher(bukkitVersion);
 

@@ -1,9 +1,14 @@
 package net.solostudio.dutycore.exception;
 
+import net.solostudio.dutycore.enums.keys.MessageKeys;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.exception.BukkitExceptionHandler;
 import revxrsal.commands.bukkit.exception.InvalidPlayerException;
+import revxrsal.commands.bukkit.exception.SenderNotPlayerException;
+import revxrsal.commands.exception.MissingArgumentException;
+import revxrsal.commands.exception.NoPermissionException;
+import revxrsal.commands.node.ParameterNode;
 
 public class CommandExceptionHandler extends BukkitExceptionHandler {
     @Override
@@ -14,11 +19,6 @@ public class CommandExceptionHandler extends BukkitExceptionHandler {
     @Override
     public void onSenderNotPlayer(SenderNotPlayerException exception, @NotNull BukkitCommandActor actor) {
         actor.error(MessageKeys.PLAYER_REQUIRED.getMessage());
-    }
-
-    @Override
-    public void onInvalidInteger(@NotNull InvalidIntegerException exception, @NotNull BukkitCommandActor actor) {
-        actor.error(MessageKeys.INVALID_NUMBER.getMessage());
     }
 
     @Override
