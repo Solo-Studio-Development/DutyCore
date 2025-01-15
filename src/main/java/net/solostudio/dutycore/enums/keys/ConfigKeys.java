@@ -9,7 +9,12 @@ import java.util.List;
 public enum ConfigKeys {
     LANGUAGE("language"),
     DATABASE("database.type"),
-    ALIASES("aliases");
+    ALIASES("aliases"),
+
+    TRUE("true"),
+    FALSE("false"),
+
+    DUTY_CHAT_FORMAT("duty-chat-format");
 
     private final String path;
 

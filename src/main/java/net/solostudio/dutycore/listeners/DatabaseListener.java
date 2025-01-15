@@ -11,7 +11,7 @@ public class DatabaseListener implements Listener {
     public void onJoin(final PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("dutycore.staff")) DutyCore.getDatabase().createPlayer(player.getName());
+        if (player.hasPermission("dutycore.staff")) DutyCore.getDatabase().createPlayer(player);
         if (DutyCore.getDatabase().exists(player.getName()) && !player.hasPermission("dutycore.staff")) DutyCore.getDatabase().deletePlayer(player.getName());
     }
 }

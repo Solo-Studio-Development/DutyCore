@@ -9,6 +9,7 @@ import net.solostudio.dutycore.events.DutyLeaveEvent;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
 import net.solostudio.dutycore.utils.LoggerUtils;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
@@ -84,7 +85,7 @@ public class MySQL implements DutyDatabase {
 
     @Override
     public void createTable() {
-        String dutyTableQuery = "CREATE TABLE IF NOT EXISTS duty (PLAYER VARCHAR(255) NOT NULL PRIMARY KEY, IN_DUTY TINYINT(1) DEFAULT 0, DUTY_TIME BIGINT DEFAULT 0)";
+        String dutyTableQuery = "CREATE TABLE IF NOT EXISTS duty (PLAYER VARCHAR(255) NOT NULL PRIMARY KEY, IN_DUTY TINYINT(1) DEFAULT 0, DUTY_TIME BIGINT DEFAULT 0, SERVED_TIME BIGINT DEFAULT 0, UUID VARCHAR(255))";
 
         try (PreparedStatement dutyTableStatement = getConnection().prepareStatement(dutyTableQuery)) {
             dutyTableStatement.execute();
@@ -94,13 +95,14 @@ public class MySQL implements DutyDatabase {
     }
 
     @Override
-    public void createPlayer(@NotNull String playerName) {
-        String query = "INSERT IGNORE INTO duty (PLAYER) VALUES (?)";
+    public void createPlayer(@NotNull Player player) {
+        String query = "INSERT IGNORE INTO duty (PLAYER, UUID) VALUES (?, ?)";
 
         try {
-            if (!exists(playerName)) {
+            if (!exists(player.getName())) {
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
-                    preparedStatement.setString(1, playerName);
+                    preparedStatement.setString(1, player.getName());
+                    preparedStatement.setString(2, player.getUniqueId().toString());
                     preparedStatement.executeUpdate();
                 }
             }
@@ -185,8 +187,83 @@ public class MySQL implements DutyDatabase {
     }
 
     @Override
+    public String getUUID(@NotNull String playerName) {
+        String query = "SELECT UUID FROM duty WHERE PLAYER = ?";
+
+        try {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setString(1, playerName);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) return resultSet.getString("UUID");
+                }
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+
+        return "NULL";
+    }
+
+    @Override
+    public String getFormattedServedTime(@NotNull String playerName) {
+        String query = "SELECT SERVED_TIME FROM duty WHERE PLAYER = ?";
+
+        try {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setString(1, playerName);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        long dutyTime = resultSet.getLong("SERVED_TIME");
+                        long hours = dutyTime / 3600;
+                        long minutes = (dutyTime % 3600) / 60;
+                        long seconds = dutyTime % 60;
+
+                        return (hours > 0 ? hours + " óra " : "") +
+                                (minutes > 0 ? minutes + " perc " : "") +
+                                seconds + " mp";
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+
+        return "0 mp";
+    }
+
+    @Override
     public void updateDutyTime(@NotNull String playerName) {
         String query = "UPDATE duty SET DUTY_TIME = DUTY_TIME + 1 WHERE PLAYER = ?";
+
+        try {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setString(1, playerName);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void updateServedTime(@NotNull String playerName) {
+        String query = "UPDATE duty SET SERVED_TIME = SERVED_TIME + 1 WHERE PLAYER = ?";
+
+        try {
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                preparedStatement.setString(1, playerName);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+    }
+
+    @Override
+    public void clearServedTime(@NotNull String playerName) {
+        String query = "UPDATE duty SET SERVED_TIME = 0 WHERE PLAYER = ?";
 
         try {
             try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {

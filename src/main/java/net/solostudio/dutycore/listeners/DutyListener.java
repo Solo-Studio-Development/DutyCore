@@ -9,18 +9,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class DutyListener implements Listener {
     private static MyScheduledTask dutyTask;
 
     @EventHandler
     public void onDutyJoin(final DutyJoinEvent event) {
-        dutyTask = DutyCore.getInstance().getScheduler().runTaskTimer(() -> DutyCore.getDatabase().updateDutyTime(event.getStaff()), 20L, 20L);
+        String staff = event.getStaff();
+
+        dutyTask = DutyCore.getInstance().getScheduler().runTaskTimer(() -> {
+            DutyCore.getDatabase().updateDutyTime(staff);
+            DutyCore.getDatabase().updateServedTime(staff);
+        }, 20L, 20L);
     }
 
     @EventHandler
     public void onDutyLeave(final DutyLeaveEvent event) {
         dutyTask.cancel();
+        DutyCore.getDatabase().clearServedTime(event.getStaff());
     }
 
     @EventHandler
@@ -28,5 +35,12 @@ public class DutyListener implements Listener {
         Player player = event.getPlayer();
 
         if (CommandDuty.getFreezeList().contains(player)) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onQuit(final PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        if (DutyCore.getDatabase().isInDuty(player.getName())) DutyCore.getDatabase().leaveDuty(player.getName());
     }
 }

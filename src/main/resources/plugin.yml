@@ -4,6 +4,6 @@ main: net.solostudio.dutycore.DutyCore
 api-version: '1.20'
 authors: [ Solo Studio ]
 folia-supported: true
-depend: [LuckPerms]
+depend: [LuckPerms, LiteBans]
 softdepend: [PlaceholderAPI]
-loadbefore: [LuckPerms, PlaceholderAPI]
+loadbefore: [LuckPerms, LiteBans, PlaceholderAPI]

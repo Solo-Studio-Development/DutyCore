@@ -12,7 +12,18 @@ public enum MessageKeys {
     INVALID_PLAYER("messages.invalid-player"),
     PLAYER_REQUIRED("messages.player-required"),
     MISSING_ARGUMENT("messages.missing-argument"),
-    NO_PERMISSION("messages.no-permission");
+    NO_PERMISSION("messages.no-permission"),
+
+    REQUIRES_DUTY("messages.requires-duty"),
+    DUTY_JOIN("messages.duty-join"),
+    DUTY_LEAVE("messages.duty-leave"),
+
+    FREEZE_ON_SENDER("messages.freeze-on-sender"),
+    FREEZE_ON_TARGET("messages.freeze-on-target"),
+    FREEZE_OFF_TARGET("messages.freeze-off-target"),
+    FREEZE_OFF_SENDER("messages.freeze-off-sender"),
+
+    STATS("messages.stats");
 
     private final String path;
 
