@@ -23,8 +23,14 @@ public class DatabaseProxy {
         public Object invoke(@NotNull Object proxy, @NotNull Method method, @NotNull Object[] args) throws Throwable {
             if (method.getReturnType().equals(Void.TYPE)) {
 
-                if (method.getName().equals("joinDuty")) return method.invoke(instance, args);
-                if (method.getName().equals("leaveDuty")) return method.invoke(instance, args);
+                switch (method.getName()) {
+                    case "joinDuty",
+                         "leaveDuty",
+                         "setStaffRank",
+                         "setPlayerRank" -> {
+                        return method.invoke(instance, args);
+                    }
+                }
 
                 DutyCore.getInstance().getScheduler().runTaskAsynchronously(() -> {
                     try {

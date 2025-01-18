@@ -1,13 +1,17 @@
 package net.solostudio.dutycore.utils;
 
+import lombok.Getter;
 import net.solostudio.dutycore.DutyCore;
 import net.solostudio.dutycore.enums.VersionTypes;
 import net.solostudio.dutycore.versions.VersionSupport;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,10 +19,17 @@ import static net.solostudio.dutycore.enums.VersionTypes.determineVersion;
 
 public class StartingUtils {
     private static final int REQUIRED_VM_VERSION = 17;
+    @Getter public static final Map<String, String> badges = new HashMap<>();
 
     public static void initialize() throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         registerListenersAndCommands();
         validateEnvironment();
+
+        ConfigurationSection badgesSection = DutyCore.getInstance().getConfig().getConfigurationSection("badges");
+
+        if (badgesSection != null) {
+            badgesSection.getKeys(false).forEach(badge -> badges.put(badge, badgesSection.getString(badge)));
+        }
     }
 
     public static void saveResourceIfNotExists(@NotNull String resourcePath) {

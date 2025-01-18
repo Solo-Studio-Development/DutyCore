@@ -14,17 +14,29 @@ public interface DutyDatabase {
 
     void createTable();
 
+    void setPlayerRank(@NotNull String playerName, @NotNull String playerRank);
+
+    void setStaffRank(@NotNull String playerName, @NotNull String staffRank);
+
     void joinDuty(@NotNull String playerName);
 
     void leaveDuty(@NotNull String playerName);
 
     void createPlayer(@NotNull Player player);
 
+    void setBadge(@NotNull String playerName, @NotNull String badgeKey);
+
+    String getBadge(@NotNull String playerName);
+
     boolean exists(@NotNull String playerName);
 
     String getFormattedDutyTime(@NotNull String playerName);
 
     String getUUID(@NotNull String playerName);
+
+    String getPlayerRank(@NotNull String playerName);
+
+    String getStaffRank(@NotNull String playerName);
 
     String getFormattedServedTime(@NotNull String playerName);
 
@@ -39,4 +51,6 @@ public interface DutyDatabase {
     List<String> getEveryStaffInDatabase();
 
     void deletePlayer(@NotNull String playerName);
+
+    void resetDutyTime(@NotNull String playerName);
 }

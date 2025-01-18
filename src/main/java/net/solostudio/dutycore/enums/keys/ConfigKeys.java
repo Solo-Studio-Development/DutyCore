@@ -14,7 +14,9 @@ public enum ConfigKeys {
     TRUE("true"),
     FALSE("false"),
 
-    DUTY_CHAT_FORMAT("duty-chat-format");
+    DUTY_CHAT_FORMAT("duty-chat-format"),
+    DUTY_JOIN_COMMANDS("join-commands"),
+    DUTY_LEAVE_COMMANDS("leave-commands");
 
     private final String path;
 

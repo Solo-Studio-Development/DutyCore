@@ -1,6 +1,7 @@
 package net.solostudio.dutycore.utils;
 
 import net.solostudio.dutycore.DutyCore;
+import net.solostudio.dutycore.annotations.Badges;
 import net.solostudio.dutycore.annotations.Staffs;
 import net.solostudio.dutycore.commands.CommandDuty;
 import net.solostudio.dutycore.enums.keys.ConfigKeys;
@@ -31,6 +32,7 @@ public class RegisterUtils {
                 .suggestionProviders(providers -> providers.addProviderForAnnotation(Staffs.class, staffs -> context -> DutyCore.getDatabase().getEveryStaffInDatabase()
                         .stream()
                         .toList()))
+                .suggestionProviders(providers -> providers.addProviderForAnnotation(Badges.class, badges -> context -> StartingUtils.getBadges().keySet()))
                 .build();
 
         lamp.register(Orphans.path(ConfigKeys.ALIASES.getList().toArray(String[]::new)).handler(new CommandDuty()));

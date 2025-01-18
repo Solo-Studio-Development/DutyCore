@@ -51,7 +51,6 @@ public class ConfigurationManager {
 
     public void reload() {
         yml = YamlConfiguration.loadConfiguration(config);
-        updateConfigWithDefaults();
 
         save();
     }
@@ -95,21 +94,5 @@ public class ConfigurationManager {
 
     public void setName(@NotNull String name) {
         this.name = name;
-    }
-
-    public void updateConfigWithDefaults() {
-        InputStream defaultConfigStream = DutyCore.getInstance().getResource(name + ".yml");
-
-        if (defaultConfigStream == null) return;
-
-        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream));
-
-        defaultConfig.getKeys(true).forEach(key -> {
-            if (yml.contains(key)) return;
-
-            yml.set(key, defaultConfig.get(key));
-        });
-
-        save();
     }
 }

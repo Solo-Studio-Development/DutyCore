@@ -9,6 +9,8 @@ import java.util.List;
 
 @Getter
 public enum MessageKeys {
+    RELOAD("messages.reload"),
+
     INVALID_PLAYER("messages.invalid-player"),
     PLAYER_REQUIRED("messages.player-required"),
     MISSING_ARGUMENT("messages.missing-argument"),
@@ -22,6 +24,13 @@ public enum MessageKeys {
     FREEZE_ON_TARGET("messages.freeze-on-target"),
     FREEZE_OFF_TARGET("messages.freeze-off-target"),
     FREEZE_OFF_SENDER("messages.freeze-off-sender"),
+
+    STAFF_RANK("messages.success-staff-rank"),
+    PLAYER_RANK("messages.success-player-rank"),
+
+    STATS_RESET("messages.success-stats-reset"),
+
+    SUCCESS_BADGE("messages.success-badge"),
 
     STATS("messages.stats");
 

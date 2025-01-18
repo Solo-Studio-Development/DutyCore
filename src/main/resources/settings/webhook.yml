@@ -1,0 +1,32 @@
+# ============================================================== #
+# Webhook Configuration Section                                  #
+# ============================================================== #
+
+global-url: ""
+
+webhook:
+  duty-join:
+    url: ""
+    enabled: false
+    title: "JOINING TO THE DUTY"
+    description: "{player} has joined the duty!"
+    color: "YELLOW"
+    author-name: ""
+    footer-text: "DUTYCORE"
+    thumbnail: "https://i.imgur.com/CDR2C7n.png"
+  duty-leave:
+    url: ""
+    enabled: false
+    title: "WITHDRAWAL FROM THE DUTY"
+    description: "{player} has left the duty! Time served: {served}. Total time served: {time}"
+    color: "YELLOW"
+    footer-text: "DUTYCORE"
+    thumbnail: "https://i.imgur.com/YhgsdxC.png"
+  duty-admin-chat:
+    url: ""
+    enabled: false
+    title: "ADMIN CHAT USED"
+    description: "{player} > {message}"
+    color: "YELLOW"
+    footer-text: "DUTYCORE"
+    thumbnail: "https://i.imgur.com/HV1gCBE.png"

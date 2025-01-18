@@ -1,6 +1,7 @@
 prefix: "&e&lDUTYCORE &8| "
 
 messages:
+  reload: "%prefix% &aSikeresen újratöltötted a fájlokat!"
   invalid-player: "%prefix% &cHelytelen játékos!"
   player-required: "%prefix% &cJátékos szükséges!"
   missing-argument: "%prefix% &cHelytelen használat! &8(&e{usage}&8)"
@@ -12,6 +13,10 @@ messages:
   freeze-on-target: "%prefix% &cLe lettél fagyasztva!"
   freeze-off-sender: "%prefix% &aSikeresen levetted a fagyasztást!"
   freeze-off-target: "%prefix% &aLe lett véve a fagyasztás!"
+  success-staff-rank: "%prefix% &aSikeresen beállítottad a staff szolgálati rangját!"
+  success-player-rank: "%prefix% &aSikeresen beállítottad a staff játékos rangját!"
+  success-stats-reset: "%prefix% &aSikeresen resetelted!"
+  success-badge: "%prefix% &aAzt se tudom mit irjak ide majd kitalalod seby xdddd"
   stats:
     - "&b{name}"
     - ""
@@ -22,3 +27,4 @@ messages:
     - "&bBans: &c{bans}"
     - "&bKicks: &c{kicks}"
     - "&bMutes: &c{mutes}"
+    - "&bBadge: &c{badge}"

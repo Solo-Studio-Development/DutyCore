@@ -9,7 +9,7 @@ language: "hu" # Supported languages -> hu, en
 # ============================================================== #
 
 database:
-  type: mysql # Supported types -> MYSQL, H2
+  type: h2 # Supported types -> MYSQL, H2
 
   # MySQL-specific configuration
   mysql:
@@ -46,6 +46,45 @@ aliases:
 
 # ============================================================== #
 # Duty Settings                                                  #
-# ==============================================================
+# ============================================================== #
 
 duty-chat-format: "&e&lDUTY CHAT &8| &e{player} &7> &e{message}"
+
+join-commands:
+  every:
+    - "say %player% you are a staff I'm sure!"
+  admin:
+    - "say %player% you are an admin!"
+  helper:
+    - "say %player% you are a helper!"
+
+leave-commands:
+  every:
+    - "say %player% you are a staff I'm sure!" # 'every' means it will run not filtering the rank. So nevermind what staff rank you has. it will run.
+  admin:
+    - "say %player% you are an admin!"
+  helper:
+    - "say %player% you are a helper!"
+
+join-actionbar:
+  enabled: true
+  message: "&e{player} &aHas joined to the duty!"
+  send-it-to-in-duty: false
+  send-it-to-everyone: true # If this is true, it will send it to everyone.
+
+leave-actionbar:
+  enabled: true
+  message: "&e{player} &cHas left from the duty!"
+  send-it-to-in-duty: false # If this is true, it will only send messages to those who are on duty, if false, it will send messages to all people who have dutycore.staff rights.
+  send-it-to-everyone: true
+
+# ============================================================== #
+# Badge Settings                                                 #
+# ============================================================== #
+
+badges:
+  copper: "&e&lC" # copper is the actual badge and the string after is a little placeholder which can be helped to identify the badges easily.
+  silver: "&f&lS"
+  gold: "&6&lG"
+  platinum: "&a&lP"
+  diamond: "&b&lD"

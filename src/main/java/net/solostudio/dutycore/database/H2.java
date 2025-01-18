@@ -4,68 +4,54 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import net.solostudio.dutycore.DutyCore;
+import net.solostudio.dutycore.events.DutyJoinEvent;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
+import net.solostudio.dutycore.utils.DutyUtils;
 import net.solostudio.dutycore.utils.LoggerUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Getter
-public class MySQL implements DutyDatabase {
+public class H2 implements DutyDatabase {
     private final Connection connection;
-    public static final Map<String, Long> activeDutyTimers = new HashMap<>();
+    private final HikariDataSource dataSource;
 
-    public MySQL(@NotNull ConfigurationSection section) throws SQLException {
+    public H2() throws SQLException, ClassNotFoundException {
+        Class.forName("net.solostudio.dutycore.libs.h2.Driver");
+
         HikariConfig hikariConfig = new HikariConfig();
 
-        String host = section.getString("host");
-        String database = section.getString("database");
-        String user = section.getString("username");
-        String pass = section.getString("password");
-        int port = section.getInt("port");
-        boolean ssl = section.getBoolean("ssl");
-        boolean certificateVerification = section.getBoolean("certificateverification");
-        int poolSize = section.getInt("poolsize");
-        int maxLifetime = section.getInt("lifetime");
+        String url = "jdbc:h2:" + DutyCore.getInstance().getDataFolder().getAbsolutePath() + "/database;MODE=MySQL";
 
-        hikariConfig.setPoolName("VaultcherPool");
-        hikariConfig.setMaximumPoolSize(poolSize);
-        hikariConfig.setMaxLifetime(maxLifetime * 1000L);
-        hikariConfig.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
-        hikariConfig.setUsername(user);
-        hikariConfig.setPassword(pass);
-        hikariConfig.addDataSourceProperty("useSSL", String.valueOf(ssl));
-        if (!certificateVerification)
-            hikariConfig.addDataSourceProperty("verifyServerCertificate", String.valueOf(false));
-        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
-        hikariConfig.addDataSourceProperty("encoding", "UTF-8");
-        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        hikariConfig.addDataSourceProperty("jdbcCompliantTruncation", "false");
-        hikariConfig.addDataSourceProperty("characterEncoding", "utf8");
-        hikariConfig.addDataSourceProperty("rewriteBatchedStatements", "true");
-        hikariConfig.addDataSourceProperty("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
-        hikariConfig.addDataSourceProperty("prepStmtCacheSize", "275");
-        hikariConfig.addDataSourceProperty("useUnivaultcher", "true");
+        hikariConfig.setJdbcUrl(url);
+        hikariConfig.setUsername("sa");
+        hikariConfig.setPassword("");
+        hikariConfig.setMaximumPoolSize(10);
+        hikariConfig.setPoolName("DutyCorePool");
 
-        HikariDataSource dataSource = new HikariDataSource(hikariConfig);
+        dataSource = new HikariDataSource(hikariConfig);
         connection = dataSource.getConnection();
     }
 
     @Override
     public boolean isConnected() {
-        return connection != null;
+        return getConnection() != null;
     }
 
     @Override
     public void disconnect() {
         if (isConnected()) {
             try {
-                connection.close();
+                getConnection().close();
             } catch (SQLException exception) {
                 LoggerUtils.error(exception.getMessage());
             }
@@ -76,8 +62,8 @@ public class MySQL implements DutyDatabase {
     public void reconnect() {
         try {
             if (getConnection() != null && !getConnection().isClosed()) getConnection().close();
-            new MySQL(Objects.requireNonNull(DutyCore.getInstance().getConfiguration().getSection("database.mysql")));
-        } catch (SQLException exception) {
+            new H2();
+        } catch (SQLException | ClassNotFoundException exception) {
             LoggerUtils.error(exception.getMessage());
         }
     }
@@ -88,23 +74,6 @@ public class MySQL implements DutyDatabase {
 
         try (PreparedStatement dutyTableStatement = getConnection().prepareStatement(dutyTableQuery)) {
             dutyTableStatement.execute();
-        } catch (SQLException exception) {
-            LoggerUtils.error(exception.getMessage());
-        }
-    }
-
-    @Override
-    public void createPlayer(@NotNull Player player) {
-        String query = "INSERT IGNORE INTO duty (PLAYER, UUID) VALUES (?, ?)";
-
-        try {
-            if (!exists(player.getName())) {
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
-                    preparedStatement.setString(1, player.getName());
-                    preparedStatement.setString(2, player.getUniqueId().toString());
-                    preparedStatement.executeUpdate();
-                }
-            }
         } catch (SQLException exception) {
             LoggerUtils.error(exception.getMessage());
         }
@@ -135,6 +104,23 @@ public class MySQL implements DutyDatabase {
             LoggerUtils.error(exception.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public void createPlayer(@NotNull Player player) {
+        String query = "INSERT IGNORE INTO duty (PLAYER, UUID) VALUES (?, ?)";
+
+        try {
+            if (!exists(player.getName())) {
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(query)) {
+                    preparedStatement.setString(1, player.getName());
+                    preparedStatement.setString(2, player.getUniqueId().toString());
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
     }
 
     @Override

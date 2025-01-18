@@ -33,6 +33,7 @@ dependencies {
     compileOnly("com.gitlab.ruany:LiteBansAPI:0.5.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.projectlombok:lombok:1.18.36")
+    compileOnly 'net.luckperms:api:5.4'
 
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 }
