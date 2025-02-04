@@ -68,13 +68,13 @@ leave-commands:
 
 join-actionbar:
   enabled: true
-  message: "&e{player} &aHas joined to the duty!"
+  message: "&e{player} &aSzolgálatba lépett!"
   send-it-to-in-duty: false
   send-it-to-everyone: true # If this is true, it will send it to everyone.
 
 leave-actionbar:
   enabled: true
-  message: "&e{player} &cHas left from the duty!"
+  message: "&e{player} &cKilépett a szolgálatból!"
   send-it-to-in-duty: false # If this is true, it will only send messages to those who are on duty, if false, it will send messages to all people who have dutycore.staff rights.
   send-it-to-everyone: true
 
@@ -89,23 +89,67 @@ badges:
   platinum: "&a&lP"
   diamond: "&b&lD"
 
-test-menu:
-  title: "Test Menu"
-  size: DISPENSER
-  update-tick: 20
-  items:
-    "1":
-      material: "STICK"
-      amount: 3
-      name: "THIS IS A STICK"
-      lore:
-        - ""
-        - "&eLore"
-        - "&eds"
-      action:
-        type:
-          - "[LEFT]"
-          - "[RIGHT]"
-        do:
-          - "[MESSAGE] Ez egy üzenet"
-          - "[COMMAND] msg %player% Ez is egy üzenet"
+# ============================================================== #
+# Navigation Menu                                                #
+# ============================================================== #
+
+navigation-menu:
+  title: "&a&lNAVIGÁCIÓ"
+  size: 9
+  filler-glass: true
+
+  staff-menu-item:
+    amount: 1
+    material: RED_CANDLE
+    name: "&a&lSTAFFOK"
+    slot: 3
+
+  sanction-menu-item:
+    amount: 1
+    material: ORANGE_CANDLE
+    name: "&a&lSZANKCIONÁLÁS"
+    slot: 5
+
+# ============================================================== #
+# Staff Menu                                                     #
+# ============================================================== #
+
+staff-menu:
+  title: "&a&lSTAFFOK"
+  size: 54
+  filler-glass: true
+
+  staff-item:
+    lore:
+      - "TODO infok"
+
+# ============================================================== #
+# Sanction Menu                                                  #
+# ============================================================== #
+
+sanction-menu:
+  title: "&a&lSZANKCIONÁLÁS"
+  size: 0
+  type: "DISPENSER"
+  filler-glass: true #warn, ban, mute, kick
+
+  warn-item:
+    amount: 1
+    material: LIGHT_GRAY_CANDLE
+    name: "&7WARN {player}"
+    slot: 0
+  kick-item:
+    amount: 1
+    material: YELLOW_CANDLE
+    name: "&eKICK {player}"
+    slot: 2
+  mute-item:
+    amount: 1
+    material: ORANGE_CANDLE
+    name: "&6MUTE {player}"
+    slot: 6
+  ban-item:
+    amount: 1
+    material: RED_CANDLE
+    name: "&cBAN {player}"
+    slot: 8

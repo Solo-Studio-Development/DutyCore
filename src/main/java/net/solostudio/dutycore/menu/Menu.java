@@ -1,9 +1,11 @@
 package net.solostudio.dutycore.menu;
 
+import lombok.Getter;
 import net.solostudio.dutycore.managers.MenuController;
 import net.solostudio.dutycore.processor.MessageProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +26,7 @@ public abstract class Menu implements InventoryHolder {
 
     public abstract int getSlots();
     public abstract int getMenuTick();
+    public abstract String getType();
 
     @Override
     public @NotNull Inventory getInventory() {
@@ -31,7 +34,8 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void open() {
-        inventory = Bukkit.createInventory(this, getSlots(), MessageProcessor.process(getMenuName()));
+        if (getSlots() == 0 && !getType().isEmpty()) inventory = Bukkit.createInventory(this, InventoryType.valueOf(getType()), MessageProcessor.process(getMenuName()));
+        else inventory = Bukkit.createInventory(this, getSlots(), MessageProcessor.process(getMenuName()));
 
         this.setMenuItems();
 

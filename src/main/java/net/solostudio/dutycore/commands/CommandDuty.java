@@ -12,7 +12,6 @@ import net.solostudio.dutycore.events.DutyLeaveEvent;
 import net.solostudio.dutycore.hooks.plugins.LiteBans;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
 import net.solostudio.dutycore.managers.MenuController;
-import net.solostudio.dutycore.menu.ConfigMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
