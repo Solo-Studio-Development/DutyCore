@@ -17,8 +17,11 @@ public enum MessageKeys {
     NO_PERMISSION("messages.no-permission"),
 
     REQUIRES_DUTY("messages.requires-duty"),
+    REQUIRES_DUTY_OTHER("messages.requires-duty-other"),
     DUTY_JOIN("messages.duty-join"),
     DUTY_LEAVE("messages.duty-leave"),
+    ALREADY_DUTY("messages.already-duty"),
+    ALREADY_DUTY_OTHER("messages.already-duty-other"),
 
     FREEZE_ON_SENDER("messages.freeze-on-sender"),
     FREEZE_ON_TARGET("messages.freeze-on-target"),
@@ -31,6 +34,8 @@ public enum MessageKeys {
     STATS_RESET("messages.success-stats-reset"),
 
     SUCCESS_BADGE("messages.success-badge"),
+    SUCCESS_FORCE_LEAVE("messages.success-forceleave"),
+    SUCCESS_FORCE_JOIN("messages.success-forcejoin"),
 
     STATS("messages.stats");
 

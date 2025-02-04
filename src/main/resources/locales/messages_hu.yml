@@ -17,6 +17,11 @@ messages:
   success-player-rank: "%prefix% &aSikeresen beállítottad a staff játékos rangját!"
   success-stats-reset: "%prefix% &aSikeresen resetelted!"
   success-badge: "%prefix% &aAzt se tudom mit irjak ide majd kitalalod seby xdddd"
+  already-duty: "%prefix% &cTe már szolgálatban vagy!"
+  success-forceleave: "%prefix% &aSikeresen kiléptetted a staffot!"
+  success-forcejoin: "%prefix% &aSikeresen beléptetted a staffot!"
+  requires-duty-other: "%prefix% &cDutyba kell lenned!"
+  already-duty-other: "%prefix% &cMár dutyba van!"
   stats:
     - "&b{name}"
     - ""

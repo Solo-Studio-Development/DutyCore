@@ -56,7 +56,9 @@ public class PlaceholderAPI {
                 case "served_time" -> database.isInDuty(playerName) ? database.getFormattedServedTime(playerName) : "---";
                 case "staff_rank" -> database.getStaffRank(playerName);
                 case "player_rank" -> database.getPlayerRank(playerName);
-                case "badge" -> StartingUtils.getBadges().getOrDefault(database.getBadge(playerName), null);
+                case "badge" -> database.isInDuty(playerName)
+                        ? StartingUtils.getBadges().getOrDefault(database.getBadge(playerName), "")
+                        : "";
                 case "is_in_duty" -> database.isInDuty(playerName) ? ConfigKeys.TRUE.getString() : ConfigKeys.FALSE.getString();
                 default -> "";
             };

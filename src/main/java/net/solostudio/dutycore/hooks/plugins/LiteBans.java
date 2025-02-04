@@ -26,9 +26,7 @@ public class LiteBans {
                 preparedStatement.setString(1, uuid.toString());
 
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        count = resultSet.getInt(1);
-                    }
+                    if (resultSet.next()) count = resultSet.getInt(1);
                 }
             } catch (SQLException exception) {
                 LoggerUtils.error(exception.getMessage());

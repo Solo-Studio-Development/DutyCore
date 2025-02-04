@@ -88,3 +88,24 @@ badges:
   gold: "&6&lG"
   platinum: "&a&lP"
   diamond: "&b&lD"
+
+test-menu:
+  title: "Test Menu"
+  size: DISPENSER
+  update-tick: 20
+  items:
+    "1":
+      material: "STICK"
+      amount: 3
+      name: "THIS IS A STICK"
+      lore:
+        - ""
+        - "&eLore"
+        - "&eds"
+      action:
+        type:
+          - "[LEFT]"
+          - "[RIGHT]"
+        do:
+          - "[MESSAGE] Ez egy üzenet"
+          - "[COMMAND] msg %player% Ez is egy üzenet"

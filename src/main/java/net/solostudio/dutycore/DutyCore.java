@@ -1,5 +1,6 @@
 package net.solostudio.dutycore;
 
+import com.earth2me.essentials.Essentials;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import net.solostudio.dutycore.hooks.plugins.PlaceholderAPI;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
 import net.solostudio.dutycore.language.Language;
 import net.solostudio.dutycore.utils.LoggerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.zapper.ZapperJavaPlugin;
@@ -30,17 +32,19 @@ import static net.solostudio.dutycore.utils.StartingUtils.saveResourceIfNotExist
 
 public final class DutyCore extends ZapperJavaPlugin {
     @Getter private static DutyCore instance;
+    @Getter private static DutyDatabase database;
     @Getter private TaskScheduler scheduler;
     @Getter private Language language;
     @Getter private WebhookFile webhookFile;
     @Getter private RegisteredServiceProvider<LuckPerms> provider;
-    @Getter private static DutyDatabase database;
+    @Getter private Essentials essentials;
     private Config config;
 
     @Override
     public void onLoad() {
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
+        essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
     }
 
     @Override

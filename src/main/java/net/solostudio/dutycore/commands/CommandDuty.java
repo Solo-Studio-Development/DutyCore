@@ -11,7 +11,8 @@ import net.solostudio.dutycore.events.DutyJoinEvent;
 import net.solostudio.dutycore.events.DutyLeaveEvent;
 import net.solostudio.dutycore.hooks.plugins.LiteBans;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
-import net.solostudio.dutycore.utils.DutyUtils;
+import net.solostudio.dutycore.managers.MenuController;
+import net.solostudio.dutycore.menu.ConfigMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +23,6 @@ import revxrsal.commands.orphan.OrphanCommand;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,24 +54,78 @@ public class CommandDuty implements OrphanCommand {
     @CommandPermission("dutycore.join")
     public void join(@NotNull Player player) {
         String name = player.getName();
+        DutyDatabase database = DutyCore.getDatabase();
+
+        if (database.isInDuty(name)) {
+            player.sendMessage(MessageKeys.ALREADY_DUTY.getMessage());
+            return;
+        }
 
         DutyCore.getInstance().getServer().getPluginManager().callEvent(new DutyJoinEvent(name));
-        DutyCore.getDatabase().joinDuty(name);
+        database.joinDuty(name);
         player.sendMessage(MessageKeys.DUTY_JOIN.getMessage());
     }
 
     @Subcommand("leave")
     @CommandPermission("dutycore.leave")
     public void leave(@NotNull Player player) {
+        String name = player.getName();
         DutyDatabase database = DutyCore.getDatabase();
-        String served = database.getFormattedServedTime(player.getName());
-        String time = database.getFormattedDutyTime(player.getName());
+        String served = database.getFormattedServedTime(name);
+        String time = database.getFormattedDutyTime(name);
+
+        if (!database.isInDuty(name)) {
+            player.sendMessage(MessageKeys.REQUIRES_DUTY.getMessage());
+            return;
+        }
 
         player.sendMessage(MessageKeys.DUTY_LEAVE.getMessage()
                 .replace("{served}", served)
                 .replace("{time}", time));
-        DutyCore.getInstance().getServer().getPluginManager().callEvent(new DutyLeaveEvent(player.getName(), served, time));
-        database.leaveDuty(player.getName());
+        DutyCore.getInstance().getServer().getPluginManager().callEvent(new DutyLeaveEvent(name, served, time));
+        database.leaveDuty(name);
+    }
+
+    @Subcommand("forceleave")
+    @CommandPermission("dutycore.forceleave")
+    public void forceLeave(@NotNull CommandSender sender, @NotNull @Staffs String target) {
+        DutyDatabase database = DutyCore.getDatabase();
+        String served = database.getFormattedServedTime(target);
+        String time = database.getFormattedDutyTime(target);
+
+        if (target.isBlank()) {
+            sender.sendMessage(MessageKeys.PLAYER_REQUIRED.getMessage());
+            return;
+        }
+
+        if (!database.isInDuty(target)) {
+            sender.sendMessage(MessageKeys.REQUIRES_DUTY_OTHER.getMessage());
+            return;
+        }
+
+        DutyCore.getInstance().getServer().getPluginManager().callEvent(new DutyLeaveEvent(target, served, time));
+        database.leaveDuty(target);
+        sender.sendMessage(MessageKeys.SUCCESS_FORCE_LEAVE.getMessage());
+    }
+
+    @Subcommand("forcejoin")
+    @CommandPermission("dutycore.forcejoin")
+    public void forceJoin(@NotNull CommandSender sender, @NotNull @Staffs String target) {
+        DutyDatabase database = DutyCore.getDatabase();
+
+        if (target.isBlank()) {
+            sender.sendMessage(MessageKeys.PLAYER_REQUIRED.getMessage());
+            return;
+        }
+
+        if (database.isInDuty(target)) {
+            sender.sendMessage(MessageKeys.ALREADY_DUTY_OTHER.getMessage());
+            return;
+        }
+
+        DutyCore.getInstance().getServer().getPluginManager().callEvent(new DutyJoinEvent(target));
+        database.joinDuty(target);
+        sender.sendMessage(MessageKeys.SUCCESS_FORCE_JOIN.getMessage());
     }
 
     @Subcommand("chat")
@@ -95,6 +149,11 @@ public class CommandDuty implements OrphanCommand {
     @Subcommand("freeze")
     @CommandPermission("dutycore.freeze")
     public void freeze(@NotNull Player player, @NotNull Player target) {
+        if (!DutyCore.getDatabase().isInDuty(player.getName())) {
+            player.sendMessage(MessageKeys.REQUIRES_DUTY.getMessage());
+            return;
+        }
+
         if (getFreezeList().contains(target)) {
             getFreezeList().remove(target);
             player.sendMessage(MessageKeys.FREEZE_OFF_SENDER.getMessage());
@@ -177,5 +236,13 @@ public class CommandDuty implements OrphanCommand {
 
         DutyCore.getDatabase().setBadge(target, badge);
         sender.sendMessage(MessageKeys.SUCCESS_BADGE.getMessage());
+    }
+
+    @Subcommand("test")
+    public void test(@NotNull Player player) {
+        MenuController menuController = MenuController.getMenuUtils(player);
+        ConfigMenu menu = new ConfigMenu(menuController, DutyCore.getInstance().getConfiguration().getSection("test-menu"));
+
+        menu.open();
     }
 }
