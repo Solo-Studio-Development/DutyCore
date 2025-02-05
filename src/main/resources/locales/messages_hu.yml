@@ -22,6 +22,8 @@ messages:
   success-forcejoin: "%prefix% &aSikeresen beléptetted a staffot!"
   requires-duty-other: "%prefix% &cDutyba kell lenned!"
   already-duty-other: "%prefix% &cMár dutyba van!"
+  last-page: "%prefix% &cMár az utolsó oldalon vagy!"
+  first-page: "%prefix% &cMár az első oldalon vagy!"
   stats:
     - "&b{name}"
     - ""

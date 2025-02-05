@@ -1,4 +1,4 @@
-package net.solostudio.dutycore.managers;
+package net.solostudio.dutycore.data;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

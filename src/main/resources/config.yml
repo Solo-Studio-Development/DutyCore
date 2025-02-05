@@ -9,7 +9,7 @@ language: "hu" # Supported languages -> hu, en
 # ============================================================== #
 
 database:
-  type: h2 # Supported types -> MYSQL, H2
+  type: mysql # Supported types -> MYSQL, H2
 
   # MySQL-specific configuration
   mysql:
@@ -24,13 +24,31 @@ database:
     lifetime: 1800000
 
 # ============================================================== #
-# Item Settings                                                  #
+# Global Menu Item Settings                                      #
 # ============================================================== #
 
 filler-glass-item:
   material: GRAY_STAINED_GLASS_PANE
   name: " "
   lore: [ ]
+
+back-item:
+  material: RED_STAINED_GLASS_PANE
+  name: "&cVISSZA"
+  lore: [ ]
+  slot: 46
+
+forward-item:
+  material: LIME_STAINED_GLASS_PANE
+  name: "&aELŐRE"
+  lore: [ ]
+  slot: 52
+
+main-item:
+  material: COMPASS
+  name: "&eFŐMENÜ"
+  lore: [ ]
+  slot: 49
 
 # ============================================================== #
 # Command Settings                                               #
@@ -96,19 +114,12 @@ badges:
 navigation-menu:
   title: "&a&lNAVIGÁCIÓ"
   size: 9
-  filler-glass: true
 
   staff-menu-item:
     amount: 1
     material: RED_CANDLE
     name: "&a&lSTAFFOK"
-    slot: 3
-
-  sanction-menu-item:
-    amount: 1
-    material: ORANGE_CANDLE
-    name: "&a&lSZANKCIONÁLÁS"
-    slot: 5
+    slot: 4
 
 # ============================================================== #
 # Staff Menu                                                     #
@@ -117,39 +128,19 @@ navigation-menu:
 staff-menu:
   title: "&a&lSTAFFOK"
   size: 54
-  filler-glass: true
+  tick: 20
 
   staff-item:
+    material: PLAYER_HEAD # Ha a skinüket akarod ne változtasd meg pls might broke the plugin BETA
+    amount: 1
+    name: "&b{player}"
     lore:
-      - "TODO infok"
-
-# ============================================================== #
-# Sanction Menu                                                  #
-# ============================================================== #
-
-sanction-menu:
-  title: "&a&lSZANKCIONÁLÁS"
-  size: 0
-  type: "DISPENSER"
-  filler-glass: true #warn, ban, mute, kick
-
-  warn-item:
-    amount: 1
-    material: LIGHT_GRAY_CANDLE
-    name: "&7WARN {player}"
-    slot: 0
-  kick-item:
-    amount: 1
-    material: YELLOW_CANDLE
-    name: "&eKICK {player}"
-    slot: 2
-  mute-item:
-    amount: 1
-    material: ORANGE_CANDLE
-    name: "&6MUTE {player}"
-    slot: 6
-  ban-item:
-    amount: 1
-    material: RED_CANDLE
-    name: "&cBAN {player}"
-    slot: 8
+      - ""
+      - "&bDuty állapot: &c{inDuty}"
+      - "&bStaff rank: &c{sRank}"
+      - "&bPlayer rank: &c{pRank}"
+      - "&bDuty time: &c{dTime}"
+      - "&bBans: &c{bans}"
+      - "&bKicks: &c{kicks}"
+      - "&bMutes: &c{mutes}"
+      - "&bBadge: &c{badge}"

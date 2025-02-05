@@ -18,6 +18,7 @@ import java.util.List;
 public class ItemBuilder implements ItemFactory {
     private final ItemStack is;
     private final ItemMeta meta;
+    private int slot;
     private boolean finished = false;
 
     public ItemBuilder(@NotNull ItemStack item) {
@@ -51,6 +52,17 @@ public class ItemBuilder implements ItemFactory {
     @Override
     public ItemBuilder setCount(@Range(from = 0, to = 64) int newCount) {
         is.setAmount(newCount);
+        return this;
+    }
+
+    @Override
+    public int getSlot() {
+        return slot;
+    }
+
+    @Override
+    public ItemFactory setSlot(int slot) {
+        this.slot = slot;
         return this;
     }
 

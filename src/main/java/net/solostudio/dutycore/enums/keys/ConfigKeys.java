@@ -16,7 +16,14 @@ public enum ConfigKeys {
 
     DUTY_CHAT_FORMAT("duty-chat-format"),
     DUTY_JOIN_COMMANDS("join-commands"),
-    DUTY_LEAVE_COMMANDS("leave-commands");
+    DUTY_LEAVE_COMMANDS("leave-commands"),
+
+    NAVIGATION_MENU_TITLE("navigation-menu.title"),
+    NAVIGATION_MENU_SIZE("navigation-menu.size"),
+
+    STAFF_MENU_TITLE("staff-menu.title"),
+    STAFF_MENU_SIZE("staff-menu.size"),
+    STAFF_MENU_TICK("staff-menu.tick");
 
     private final String path;
 

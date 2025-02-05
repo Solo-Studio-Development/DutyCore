@@ -37,7 +37,10 @@ public enum MessageKeys {
     SUCCESS_FORCE_LEAVE("messages.success-forceleave"),
     SUCCESS_FORCE_JOIN("messages.success-forcejoin"),
 
-    STATS("messages.stats");
+    STATS("messages.stats"),
+
+    FIRST_PAGE("messages.first-page"),
+    LAST_PAGE("messages.last-page");
 
     private final String path;
 

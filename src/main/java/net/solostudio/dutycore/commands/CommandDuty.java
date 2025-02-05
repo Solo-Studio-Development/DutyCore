@@ -4,14 +4,15 @@ import lombok.Getter;
 import net.solostudio.dutycore.DutyCore;
 import net.solostudio.dutycore.annotations.Badges;
 import net.solostudio.dutycore.annotations.Staffs;
+import net.solostudio.dutycore.data.MenuController;
 import net.solostudio.dutycore.enums.keys.ConfigKeys;
 import net.solostudio.dutycore.enums.keys.MessageKeys;
 import net.solostudio.dutycore.events.AdminChatEvent;
 import net.solostudio.dutycore.events.DutyJoinEvent;
 import net.solostudio.dutycore.events.DutyLeaveEvent;
-import net.solostudio.dutycore.hooks.plugins.LiteBans;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
-import net.solostudio.dutycore.managers.MenuController;
+import net.solostudio.dutycore.menu.menus.NavigationMenu;
+import net.solostudio.dutycore.processor.MessageProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,8 +23,6 @@ import revxrsal.commands.orphan.OrphanCommand;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class CommandDuty implements OrphanCommand {
     @Getter public static List<Player> freezeList = new ArrayList<>();
@@ -172,33 +171,7 @@ public class CommandDuty implements OrphanCommand {
             return;
         }
 
-        DutyDatabase database = DutyCore.getDatabase();
-
-        UUID targetUUID = UUID.fromString(database.getUUID(target));
-        CompletableFuture<Integer> bansFuture = LiteBans.getCount("litebans_bans", "banned_by_uuid", targetUUID);
-        CompletableFuture<Integer> kicksFuture = LiteBans.getCount("litebans_kicks", "banned_by_uuid", targetUUID);
-        CompletableFuture<Integer> mutesFuture = LiteBans.getCount("litebans_mutes", "banned_by_uuid", targetUUID);
-        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(bansFuture, kicksFuture, mutesFuture);
-
-        combinedFuture.thenRun(() -> {
-            String bans = String.valueOf(bansFuture.join());
-            String kicks = String.valueOf(kicksFuture.join());
-            String mutes = String.valueOf(mutesFuture.join());
-            String time = database.getFormattedDutyTime(target);
-
-            MessageKeys.STATS.getMessages().forEach(message -> {
-                player.sendMessage(message
-                        .replace("{bans}", bans)
-                        .replace("{kicks}", kicks)
-                        .replace("{mutes}", mutes)
-                        .replace("{dTime}", time)
-                        .replace("{name}", target)
-                        .replace("{inDuty}", database.isInDuty(target) ? ConfigKeys.TRUE.getString() : ConfigKeys.FALSE.getString())
-                        .replace("{sRank}", database.getStaffRank(target))
-                        .replace("{pRank}", database.getPlayerRank(target))
-                        .replace("{badge}", database.getBadge(target)));
-            });
-        });
+        MessageProcessor.translateInformation(target, MessageKeys.STATS.getMessages()).thenAccept(message -> message.forEach(player::sendMessage));
     }
 
     @Subcommand("set staff")
@@ -237,11 +210,9 @@ public class CommandDuty implements OrphanCommand {
         sender.sendMessage(MessageKeys.SUCCESS_BADGE.getMessage());
     }
 
-    @Subcommand("test")
-    public void test(@NotNull Player player) {
-        MenuController menuController = MenuController.getMenuUtils(player);
-        ConfigMenu menu = new ConfigMenu(menuController, DutyCore.getInstance().getConfiguration().getSection("test-menu"));
-
-        menu.open();
+    @Subcommand("menu")
+    @CommandPermission("dutycore.menu")
+    public void menu(@NotNull Player player) {
+        new NavigationMenu(MenuController.getMenuUtils(player)).open();
     }
 }

@@ -5,13 +5,13 @@ import net.solostudio.dutycore.processor.MessageProcessor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public interface ItemFactory {
@@ -38,6 +38,11 @@ public interface ItemFactory {
     ItemFactory setType(@NotNull Material material);
 
     ItemFactory setCount(int newCount);
+
+    int getSlot();
+
+
+    ItemFactory setSlot(int slot);
 
     ItemFactory setName(@NotNull String name);
 
@@ -72,19 +77,40 @@ public interface ItemFactory {
 
     boolean isFinished();
 
-    static ItemStack createItemFromString(@NotNull String path) {
-        ConfigurationSection section = DutyCore.getInstance().getConfiguration().getSection(path);
+    private static Optional<ItemStack> buildItem(@NotNull ConfigurationSection section) {
+        return Optional.ofNullable(section.getString("material"))
+                .map(Material::valueOf)
+                .map(material -> {
+                    int amount = section.getInt("amount", 1);
+                    String name = section.getString("name", "");
 
-        Material material = Material.valueOf(Objects.requireNonNull(section).getString("material"));
-        int amount = section.getInt("amount", 1);
-        String name = section.getString("name");
-        String[] loreArray = section.getStringList("lore").toArray(new String[0]);
+                    return ItemFactory.create(material, amount)
+                            .setName(name)
+                            .addLore(section.getStringList("lore")
+                                    .stream()
+                                    .map(MessageProcessor::process).toArray(String[]::new))
+                            .finish();
+                });
+    }
 
-        IntStream.range(0, loreArray.length).forEach(index -> loreArray[index] = MessageProcessor.process(loreArray[index]));
+    static Optional<ItemStack> createItemFromString(@NotNull String path) {
+        return Optional.ofNullable(DutyCore.getInstance().getConfiguration().getSection(path))
+                .flatMap(ItemFactory::buildItem);
+    }
 
-        return ItemFactory.create(material, amount)
-                .setName(Objects.requireNonNull(name))
-                .addLore(loreArray)
-                .finish();
+    static void createItemFromString(@NotNull String path, @NotNull Inventory inventory) {
+        Optional.ofNullable(DutyCore.getInstance().getConfiguration().getSection(path))
+                .flatMap(section -> {
+                    var itemOpt = buildItem(section);
+                    int slot = section.getInt("slot", 0);
+                    itemOpt.ifPresent(item -> inventory.setItem(slot, item));
+                    return itemOpt;
+                });
+    }
+
+    static int getItemSlotFromString(@NotNull String path) {
+        return Optional.ofNullable(DutyCore.getInstance().getConfiguration().getSection(path))
+                .map(section -> section.getInt("slot", -1))
+                .orElse(-1);
     }
 }

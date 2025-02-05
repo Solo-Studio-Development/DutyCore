@@ -11,10 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @UtilityClass
-@SuppressWarnings({"deprecation", "unchecked"})
 public class DutyUtils {
     public void sendActionbar(@NotNull String actionType, @NotNull Player player) {
         Config config = DutyCore.getInstance().getConfiguration();
@@ -76,8 +77,18 @@ public class DutyUtils {
                 });
     }
 
+    public String getPlayerTexture(@NotNull Player player) {
+        UUID playerUUID = player.getUniqueId();
+
+        String textureUrl = "https://textures.minecraft.net/texture/" + playerUUID;
+
+        String textureJson = String.format("{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}", textureUrl);
+        byte[] encodedData = Base64.getEncoder().encode(textureJson.getBytes());
+
+        return new String(encodedData);
+    }
+
     private void runCommand(@NotNull Player player, @NotNull String command) {
         DutyCore.getInstance().getScheduler().runTask(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", player.getName())));
     }
-
 }

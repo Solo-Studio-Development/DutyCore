@@ -4,7 +4,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import net.solostudio.dutycore.DutyCore;
+import net.solostudio.dutycore.data.StaffData;
+import net.solostudio.dutycore.hooks.plugins.LiteBans;
 import net.solostudio.dutycore.interfaces.DutyDatabase;
+import net.solostudio.dutycore.utils.DutyUtils;
 import net.solostudio.dutycore.utils.LoggerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -404,6 +408,50 @@ public class MySQL implements DutyDatabase {
         }
 
         return staffs;
+    }
+
+    @Override
+    public CompletableFuture<List<StaffData>> getStaffDatas() {
+        List<CompletableFuture<StaffData>> futures = new ArrayList<>();
+        String query = "SELECT * FROM duty";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String name = resultSet.getString("PLAYER");
+                boolean inDuty = isInDuty(name);
+                String time = getFormattedDutyTime(name);
+                String playerRank = getPlayerRank(name);
+                String staffRank = getStaffRank(name);
+                String badge = getBadge(name);
+                UUID uuid = UUID.fromString(getUUID(name));
+
+                CompletableFuture<Integer> bansFuture = LiteBans.getCount("litebans_bans", "banned_by_uuid", uuid);
+                CompletableFuture<Integer> kicksFuture = LiteBans.getCount("litebans_kicks", "banned_by_uuid", uuid);
+                CompletableFuture<Integer> mutesFuture = LiteBans.getCount("litebans_mutes", "banned_by_uuid", uuid);
+
+                CompletableFuture<StaffData> staffDataFuture = CompletableFuture.allOf(bansFuture, kicksFuture, mutesFuture)
+                        .thenApply(v0id -> new StaffData(
+                                name,
+                                inDuty,
+                                playerRank,
+                                staffRank,
+                                time,
+                                bansFuture.join(),
+                                kicksFuture.join(),
+                                mutesFuture.join(),
+                                badge
+                        ));
+
+                futures.add(staffDataFuture);
+            }
+        } catch (SQLException exception) {
+            LoggerUtils.error(exception.getMessage());
+        }
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v0id -> futures.stream().map(CompletableFuture::join).toList());
     }
 
     @Override

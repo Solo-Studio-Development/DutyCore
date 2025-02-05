@@ -1,9 +1,11 @@
 package net.solostudio.dutycore.interfaces;
 
+import net.solostudio.dutycore.data.StaffData;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface DutyDatabase {
     boolean isConnected();
@@ -49,6 +51,8 @@ public interface DutyDatabase {
     boolean isInDuty(@NotNull String playerName);
 
     List<String> getEveryStaffInDatabase();
+
+    CompletableFuture<List<StaffData>> getStaffDatas();
 
     void deletePlayer(@NotNull String playerName);
 

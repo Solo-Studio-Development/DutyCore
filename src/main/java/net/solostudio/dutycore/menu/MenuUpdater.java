@@ -26,6 +26,11 @@ public class MenuUpdater {
     }
 
     private void updateMenu() {
+        if (menu.getInventory().getViewers().isEmpty()) {
+            stop();
+            return;
+        }
+
         if (menu.getInventory().getViewers().contains(menu.menuController.owner())) menu.updateMenuItems();
         else stop();
     }

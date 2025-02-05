@@ -17,9 +17,9 @@ public class RegisterUtils {
     public static void registerListeners() {
         LoggerUtils.info("### Registering listeners... ###");
 
-        Bukkit.getPluginManager().registerEvents(new MenuListener(), DutyCore.getInstance());
         Bukkit.getPluginManager().registerEvents(new DatabaseListener(), DutyCore.getInstance());
         Bukkit.getPluginManager().registerEvents(new DutyListener(), DutyCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new MenuListener(), DutyCore.getInstance());
 
         LoggerUtils.info("### Successfully registered 3 listener. ###");
     }
